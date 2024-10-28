@@ -1,0 +1,39 @@
+scenario: ExampleScenario # in mosaik so called world
+start_time: '2012-01-02 00:00:00' # ISO 8601 start time of the simulation
+end_time: 1000 # duration in minutes
+simulators: 
+- model_type: HouseHold
+  models:
+    - name: HouseHold1
+      Parameters:
+        houses: 2,    # Number of houses
+- model_type: Battery
+  models:
+    - name: Battery1
+      States:
+        soc: 0.8                  # Initial State of Charge (fraction)
+- model_type: PV
+  models:
+    - name: PV1
+- model_type: PV
+  models:
+    - name: PV1
+- model_type: WindTurbine
+  models:
+    - name: WindTurbine1
+- model_type: Grid
+  models:
+    - name: Grid1
+connections:
+- from: HouseHold.load_dem
+  to: Grid1
+- from: Grid1
+  to: Battery.requested_power_flow
+- from: PV1.pv_gen
+  to: Grid1
+- from: WindTurbine1.wind_gen
+  to: Grid1
+monitor:
+  - Multiplier1.Product
+  - Multiplier2.Product
+  - Adder1.Out1

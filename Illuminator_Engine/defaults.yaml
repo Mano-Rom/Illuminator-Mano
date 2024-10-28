@@ -1,0 +1,87 @@
+simulators: 
+- model_type: Battery
+  model_mode: 'hybrid'
+  step_size: 1 # step size in minutes
+  Inputs:
+    requested_power_flow: 0  # Requested charging (+) or discharging (-) power/energy
+  Outputs:
+    effective_power_flow": 0,  # Effective charging/discharging power/energy
+  Parameters:
+    charge_power_max: 10,    # Maximum charging power (kW)
+    discharge_power_max: 14, # Maximum discharging power (kW)
+    soc_min: 0.1,             # Minimum State of Charge (fraction)
+    soc_max: 0.95,             # Maximum State of Charge (fraction)
+    capacity: 27,           # Battery capacity (kWh)
+  States:
+    soc: 0.5                  # Initial State of Charge (fraction)
+  Triggers:
+  Scenario_File:
+- model_type: HouseHold
+  model_mode: 'hybrid'
+  step_size: 1 # step size in minutes
+  Inputs:
+    load: 0  # Requested charging (+) or discharging (-) power/energy
+  Outputs:
+    load_dem": 0,  # Effective charging/discharging power/energy
+  Parameters:
+    houses: 1,    # Number of houses
+    output_type: 'power' # 'power' or 'energy'
+  States:
+  Triggers:
+  Scenario_File: 'load_data.txt'
+- model_type: PV
+  model_mode: 'hybrid'
+  step_size: 1 # step size in minutes
+  Inputs:
+    G_Gh: 0,    # Global Horizontal Irradiance (W/m²)
+    G_Dh: 0,    # Diffuse Horizontal Irradiance (W/m²)
+    G_Bn: 0,    # Direct Normal Irradiance (W/m²)
+    Ta: 0,      # Ambient Temperature (°C)
+    hs: 0,      # Sun elevation angle (degrees)
+    FF: 0,      # Wind speed (m/s)
+    Az: 0       # Sun azimuth angle (degrees)
+  Outputs:
+    pv_gen: 0,      # PV generation (kW or kWh)
+    total_irr: 0    # Total irradiance on the panel (W/m²)
+  Parameters:
+    m_area: 1.6,                # Module area (m²)
+    NOCT: 45,                  # Nominal Operating Cell Temperature (°C)
+    m_efficiency_stc: 0.18,      # Module efficiency at STC
+    G_NOCT: 800,                # Irradiance at NOCT (W/m²)
+    P_STC: 300,                 # Power output at STC (W)
+    peak_power: 5000,            # Peak power (W)
+    m_tilt: 30,                # Module tilt angle (degrees)
+    m_az: 180,                  # Module azimuth angle (degrees)
+    cap: 5,                   # Capacity (kW)
+    output_type: power,           # 'power' or 'energy'
+    inv_eff: 0.96,              # Inverter efficiency
+    mppt_eff: 0.99,             # MPPT efficiency
+    losses: 0.97,               # Other losses
+    sf: 1.1,                    # Safety factor
+    albedo: 0.2                 # Albedo coefficient
+  States:
+  Triggers:
+  Scenario_File: 'pv_data_Rotterdam_Nl-15min.txt'
+- model_type: WindTurbine
+  model_mode: 'hybrid'
+  step_size: 1 # step size in minutes
+  Inputs:
+    u: 0   # Wind speed at measurement height (m/s)
+  Outputs:
+    wind_gen: 0,        # Wind generation (kW or kWh)
+    u_at_hub_height: 0  # Adjusted wind speed at hub height (m/s)
+  Parameters:
+    p_rated: 5000,            # Rated power output of the turbine (kW)
+    u_rated: 12,            # Rated wind speed (m/s)
+    u_cutin: 3,            # Cut-in wind speed (m/s)
+    u_cutout: 25,           # Cut-out wind speed (m/s)
+    diameter: 126,           # Rotor diameter (m)
+    cp: 0.45,                 # Coefficient of performance (<= 0.59)
+    output_type: power,        # 'power' or 'energy'
+    hub_height: 80,         # Turbine hub height (m)
+    measurement_height: 10, # Wind speed measurement height (m)
+    roughness_length: 0.2,   # Surface roughness length (m), default 0.2
+    air_density: 1.225       # Air density (kg/m³), default at sea level
+  States:
+  Triggers:
+  Scenario_File: 'winddata_NL.txt'

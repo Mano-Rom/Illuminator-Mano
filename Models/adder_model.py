@@ -1,5 +1,12 @@
 import datetime
 
+"""
+Inputs: {"In1": 0, "In2": 0}
+Outputs: {"Out1": 0}
+Parameters: {}
+States: {}
+"""
+
 class Adder:
     def __init__(self, inputs:dict={}, outputs:dict={}, parameters:dict={}, states:dict={}, step_size:int=1, time:datetime.datetime=None):
         self.inputs = inputs
